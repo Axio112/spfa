@@ -1,12 +1,13 @@
 # spfa
 Simple Python Flask App
 
-It includes a minimal Flask-based web service containerized with Docker and orchestrated using Docker Compose.
+project inclides a minimal Flask-based web service containerized with Docker and orchestrated using Docker Compose.
+
 Project Phase 1/
-├── Dockerfile
-├── docker-compose.yml
-├── requirements.txt
-└── spfa.py
+-Dockerfile
+-docker-compose.yml
+-requirements.txt
+-spfa.py
 
 File Overview:
 
