@@ -37,3 +37,15 @@ A simple Flask web server script that:
 -Imports Flask
 -Defines a route / that returns a “Hello, World!” message
 -Uses app.run() to start the server if executed directly
+
+*install docker*
+
+1) run docker image:
+docker pull ghcr.io/axio112/spfa:v1
+2) run container:
+docker run -p 5000:5000 ghcr.io/axio112/spfa:v1
+3) Access the app at:
+http://localhost:5000
+
+
+
