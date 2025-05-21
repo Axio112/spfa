@@ -1,0 +1,6 @@
+services:
+  spfa:
+    build: .
+    image: spfa:v1
+    ports:
+      - "5000:5000"
