@@ -5,9 +5,7 @@ Simple Python Flask App with Kubernetes
 This phase takes the Flask app from Phase 1 and runs it on Kubernetes.  
 It adds scaling, health checks, config, and a scheduled job.
 
----
-
-## Files in This Phase
+## Files in Phase 2
 
 - spfa-deployment.yaml — runs the app in pods
 - spfa-service.yaml — makes the app available in browser
@@ -16,8 +14,6 @@ It adds scaling, health checks, config, and a scheduled job.
 - spfa-cronjob.yaml — runs a task every 5 minutes
 - README.md — this file
 
----
-
 ## What This Does
 
 - Runs the app on Kubernetes using Minikube
@@ -25,8 +21,6 @@ It adds scaling, health checks, config, and a scheduled job.
   ghcr.io/axio112/spfa:v1
 - Works on Intel and Apple Silicon (multi-arch image)
 - App runs on port 5000, shown in browser on port 30080
-
----
 
 ## How to Run
 
@@ -49,8 +43,6 @@ It adds scaling, health checks, config, and a scheduled job.
 
 6. Start the scheduled task:
    kubectl apply -f spfa-cronjob.yaml
-
----
 
 ## Example Logs
 
