@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spfa-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: spfa
+  template:
+    metadata:
+      labels:
+        app: spfa
+    spec:
+      containers:
+        - name: spfa
+          image: spfa:local # <-- UPDATED IMAGE TAG
+          ports:
+            - containerPort: 5000
+          env:
+            - name: FLASK_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: spfa-config
+                  key: FLASK_ENV
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 3
