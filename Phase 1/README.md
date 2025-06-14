@@ -1,4 +1,4 @@
-# spfa — Phase 2
+# spfa — Phase 1
 Simple Python Flask App
 
 project inclides a minimal Flask-based web service containerized with Docker and orchestrated using Docker Compose.
