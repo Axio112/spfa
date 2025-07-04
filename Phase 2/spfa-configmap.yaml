@@ -1,6 +1,7 @@
 apiVersion: v1
-kind: ConfigMap
+kind: Secret
 metadata:
-  name: spfa-config
+  name: spfa-secret
+type: Opaque
 data:
-  FLASK_ENV: production
+  API_TOKEN: ZHVtbXlfYXBpX3Rva2Vu  # base64 for "dummy_api_token"
