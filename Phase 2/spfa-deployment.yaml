@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: spfa
-          image: spfa:local
+          image: ghcr.io/axio112/spfa:v1
           ports:
             - containerPort: 5000
           env:
