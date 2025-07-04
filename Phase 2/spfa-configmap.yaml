@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: spfa-secret
+type: Opaque
+data:
+  API_TOKEN: ZHVtbXlfYXBpX3Rva2Vu # base64 for "dummy_api_token"
