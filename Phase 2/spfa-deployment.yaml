@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: spfa
-          image: spfa:local  # <-- Your custom tag or use ghcr.io/axio112/spfa:v1
+          image: spfa:local
           ports:
             - containerPort: 5000
           env:
