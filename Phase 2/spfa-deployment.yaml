@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: spfa
-          image: spfa:local # <-- UPDATED IMAGE TAG
+          image: spfa:local  # <-- Your custom tag or use ghcr.io/axio112/spfa:v1
           ports:
             - containerPort: 5000
           env:
@@ -23,6 +23,11 @@ spec:
                 configMapKeyRef:
                   name: spfa-config
                   key: FLASK_ENV
+            - name: API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: spfa-secret
+                  key: API_TOKEN
           livenessProbe:
             httpGet:
               path: /
