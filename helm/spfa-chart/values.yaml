@@ -1,0 +1,48 @@
+image:
+  repository: vitalybelos112/spfa
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+replicaCount: 3
+
+service:
+  type: NodePort
+  port: 5000
+  targetPort: 5000
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
+
+config:
+  enabled: true
+  data:
+    MESSAGE: "Hello, World!"
+
+secret:
+  enabled: true
+  data:
+    SECRET_TOKEN: "changeme"
+
+hpa:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50
+
+cronjob:
+  enabled: true
+  schedule: "*/5 * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  command: ["python", "-c", "print('Hello from Kubernetes CronJob')"]
+
+podAnnotations: {}
+podLabels: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

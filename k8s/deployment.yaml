@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spfa-deployment
+  labels:
+    app: spfa
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: spfa
+  template:
+    metadata:
+      labels:
+        app: spfa
+    spec:
+      containers:
+        - name: spfa
+          image: vitalybelos112/spfa:latest   # change if you use another registry
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+          env:
+            - name: MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: spfa-config
+                  key: MESSAGE
+            - name: SECRET_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: spfa-secret
+                  key: SECRET_TOKEN
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi

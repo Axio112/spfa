@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: spfa-service
+  labels:
+    app: spfa
+spec:
+  type: NodePort                   # or ClusterIP + use `minikube service spfa-service`
+  selector:
+    app: spfa
+  ports:
+    - name: http
+      port: 5000
+      targetPort: 5000
+      # nodePort: <omit so K8s assigns a free port>

@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: spfa-cron
+  labels:
+    app: spfa-cron                  # <— distinct label so HPA ignores these pods
+spec:
+  schedule: "*/5 * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: spfa-cron
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: cron
+              image: vitalybelos112/spfa:latest
+              command: ["python", "-c", "print('Hello from Kubernetes CronJob')"]
