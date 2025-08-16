@@ -1,0 +1,7 @@
+version: "3.8"
+services:
+  spfa:
+    build: .
+    image: your-dockerhub-user/spfa:latest
+    ports:
+      - "5000:5000"
