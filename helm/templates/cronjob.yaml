@@ -1,17 +1,21 @@
-{{- if .Values.cronjob.enabled }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: {{ include "spfa.fullname" . }}
+  labels:
+    {{- include "spfa.labels" . | nindent 4 }}
 spec:
   schedule: {{ .Values.cronjob.schedule | quote }}
   jobTemplate:
     spec:
       template:
+        metadata:
+          labels:
+            {{- include "spfa.selectorLabels" . | nindent 12 }}
         spec:
           restartPolicy: OnFailure
           containers:
-          - name: spfa-cron
-            image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-            command: {{ toYaml .Values.cronjob.command | nindent 12 }}
-{{- end }}
+            - name: {{ include "spfa.name" . }}-cron
+              image: busybox:1.36
+              command:
+{{ toYaml .Values.cronjob.command | indent 16 }}

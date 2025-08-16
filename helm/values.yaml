@@ -21,7 +21,7 @@ env:
 
 secrets:
   # put real secrets here (stringData). Leave empty if not used.
-  EXAMPLE_TOKEN: "I'm-super-secret"
+  EXAMPLE_TOKEN: "super-secret"
 
 autoscaling:
   enabled: true
@@ -36,3 +36,5 @@ cronjob:
     - /bin/sh
     - -c
     - 'echo "Hello from Kubernetes" && date'
+
+fullnameOverride: spfa
