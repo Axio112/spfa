@@ -1,0 +1,38 @@
+image:
+  repository: vitalybelos112/spfa
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 5000
+
+resources:
+  limits:
+    cpu: 250m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 64Mi
+
+env:
+  # plain env vars go here (non-secret)
+  EXAMPLE_MESSAGE: "Hello from ConfigMap"
+
+secrets:
+  # put real secrets here (stringData). Leave empty if not used.
+  EXAMPLE_TOKEN: "I'm-super-secret"
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 50
+
+cronjob:
+  enabled: true
+  schedule: "*/2 * * * *"   # every 2 minutes
+  command:
+    - /bin/sh
+    - -c
+    - 'echo "Hello from Kubernetes" && date'
