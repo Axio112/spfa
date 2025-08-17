@@ -79,7 +79,7 @@ Minimal Python Flask “Hello, World!” app, containerized with Docker and orch
 
 ---
 
-## # SPFA — Phase 3
+## Phase 3: Helm
 
 Deploy the Flask app to Kubernetes using the published **Helm chart on Docker Hub (OCI)**.  
 This guide is device‑agnostic: no local paths are required.
