@@ -79,57 +79,131 @@ Minimal Python Flask “Hello, World!” app, containerized with Docker and orch
 
 ---
 
-## Phase 3: Helm & Jenkins CI/CD
+## # SPFA — Phase 3
 
-### A) Helm
-
-```
-helm/
-├─ Chart.yaml
-├─ values.yaml
-└─ templates/ (deployment, service, hpa, secret, configmap, cronjob)
-```
-
-Deploy with Helm:
-```bash
-helm lint ./helm
-helm template spfa ./helm | kubectl apply --dry-run=client -f -
-helm upgrade --install spfa ./helm \
-  --set image.repository=vitalybelos112/spfa \
-  --set image.tag=latest
-kubectl rollout status deployment/spfa-spfa --timeout=180s
-kubectl port-forward deploy/spfa-spfa 5000:5000
-curl http://localhost:5000    # → Hello, World!
-```
-
-### B) Git (branch + PR)
-
-```bash
-git checkout -b feature/phase3
-# ...edit files...
-git add .
-git commit -m "Phase 3: Helm + Jenkins pipeline"
-git push -u origin feature/phase3
-# open PR → review → merge to main
-```
-
-### C) Jenkins Pipeline
-
-- The repo contains a `Jenkinsfile` that:
-  1) lints and dry-runs the Helm chart,  
-  2) builds & tags the image (`<repo>:<shortSHA>` and `latest`),  
-  3) pushes to Docker Hub,  
-  4) deploys with `helm upgrade --install` (atomic/wait),  
-  5) runs an in-cluster smoke test (`curlimages/curl` → `spfa-service:5000`).
-
-**Minimal setup in Jenkins**
-- Add Docker Hub credentials:
-  - **Kind:** Username with password
-  - **ID:** `dockerhub-creds`
-- Create a **Pipeline** job → **Pipeline script from SCM** → point at this repo.
-- Trigger: **manual** (“Build Now”).
+Deploy the Flask app to Kubernetes using the published **Helm chart on Docker Hub (OCI)**.  
+This guide is device‑agnostic: no local paths are required.
 
 ---
+
+## Prerequisites
+
+You need any Kubernetes cluster. For local testing we recommend **Minikube**.
+
+- Kubernetes cluster (e.g., Minikube, kind, k3s, or a managed cluster)
+- `kubectl` v1.20+
+- `Helm` v3.8+ (OCI support is enabled by default in modern Helm)
+- Optional (recommended for autoscaling): **metrics-server** addon
+
+> The app image is **docker.io/vitalybelos112/spfa:latest**.  
+> The Helm chart is **oci://registry-1.docker.io/vitalybelos112/spfa** (version **0.1.1**).
+
+---
+
+## 1) Start a local cluster (optional — if you already have one, skip)
+
+### Windows PowerShell
+```powershell
+minikube start
+minikube addons enable metrics-server 2>$null  # optional, for HPA metrics
+```
+
+### macOS/Linux (bash)
+```bash
+minikube start
+minikube addons enable metrics-server 2>/dev/null || true  # optional
+```
+
+---
+
+## 2) Install (or upgrade) the app with Helm (OCI)
+
+### Windows PowerShell
+```powershell
+helm upgrade --install spfa oci://registry-1.docker.io/vitalybelos112/spfa `
+  --version 0.1.1 `
+  --set image.repository=vitalybelos112/spfa `
+  --set image.tag=latest `
+  --wait --atomic --timeout 180s
+```
+
+### macOS/Linux (bash)
+```bash
+helm upgrade --install spfa oci://registry-1.docker.io/vitalybelos112/spfa   --version 0.1.1   --set image.repository=vitalybelos112/spfa   --set image.tag=latest   --wait --atomic --timeout 180s
+```
+
+**What gets created**
+- Deployment: `spfa`
+- Service: `spfa-service` (ClusterIP on port 5000)
+- HPA: `spfa` (targets CPU 50%, min 1, max 3)
+- CronJob: `spfa` (every 2 minutes, prints a message)
+- ConfigMap: `spfa-config`
+- Secret: `spfa-secret`
+
+---
+
+## 3) Verify the deployment
+
+### a) Rollout
+```bash
+kubectl rollout status deployment/spfa --timeout=180s
+```
+
+### b) In‑cluster smoke test (works on any cluster)
+```bash
+kubectl run curl --rm -i --restart=Never --image=curlimages/curl:8.9.1 --   sh -c "curl -sS http://spfa-service:5000 | head -n1"
+# Expect: Hello, World!
+```
+
+### c) From your machine (Minikube only)
+**Windows PowerShell**
+```powershell
+$URL = (minikube service spfa-service --url | Select-Object -First 1)
+Invoke-WebRequest $URL -UseBasicParsing | Select-Object -Expand Content
+```
+
+**macOS/Linux (bash)**
+```bash
+URL=$(minikube service spfa-service --url | head -n1)
+curl -sS "$URL"
+```
+
+---
+
+## 4) Upgrade
+
+To deploy a **new app image** (e.g., a new tag):
+```bash
+helm upgrade spfa oci://registry-1.docker.io/vitalybelos112/spfa   --version 0.1.1   --set image.repository=vitalybelos112/spfa   --set image.tag=<newTag>   --wait --atomic --timeout 180s
+```
+
+To upgrade to a **new chart version**, bump `--version` accordingly.
+
+---
+
+## 5) Rollback
+
+```bash
+helm history spfa
+helm rollback spfa <REV>   # e.g., helm rollback spfa 1
+```
+
+---
+
+## 6) Uninstall
+
+```bash
+helm uninstall spfa
+```
+
+---
+
+## References
+
+- Chart (OCI): `oci://registry-1.docker.io/vitalybelos112/spfa` (version `0.1.1`)
+- App Image: `docker.io/vitalybelos112/spfa:latest`
+- Source: https://github.com/Axio112/spfa
+
 
 ## File Overview
 
